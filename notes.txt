@@ -1,0 +1,23 @@
+-Structured Output:  It refers to the practice of having language models return responses in a well-defined data format (for example, JSON), rather than free-format text. This makes the model output easier to parse and work with programmatically.
+
+-Why do we need Structured output ?
+  Data Extraction, API Building and Agents .
+
+-LLMs output is textual means it is unstructured, so we can't integrate with Databases, APIs etc. So we required structured output.
+
+-Ways to get Structured Output
+A) OpenAI LLMs generally give the structured output(use with_structured_output function from langchain)
+B) Others are give unstructured output (use output_parsers function from langchain)
+
+-with_structured_output
+when we do model invoke we have to call with with_structured_output function with data format.(3 ways)
+i) Typed Dictionary
+    It is a way to define a dictionary in python where you specify what keys and values should exist. It helps ensure that your dictionary follows a specific structures.
+
+    -why use TypedDict?
+    {It tells python what keys are required and what types of values they should have.}
+    {It does not validate data at runtime(it just helps with type hints for better coding.)}
+
+    (Types: Simple TypedDict, Annotated TypedDict, Literal, More complex->with pros and cons)
+ii) Pydantic 
+iii) Json_Schema
