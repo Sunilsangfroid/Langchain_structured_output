@@ -46,6 +46,6 @@ Heavy and bulky design
 Too much bloatware from Samsung
 Expensive price tag
 
-Review by Nitish Singh
+Review by Sunil Patra
 """)
 
