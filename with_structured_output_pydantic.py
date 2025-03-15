@@ -1,11 +1,15 @@
 import os
-from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from typing import TypedDict, Annotated, Optional, Literal
 from dotenv import load_dotenv
+from pydantic import BaseModel, Field
 
 load_dotenv()
+google_api_key = os.getenv("GOOGLE_API_KEY")
+if not google_api_key:
+    raise ValueError("GOOGLE_API_KEY is not set in the environment variables")
 
-model = ChatOpenAI()
+model = ChatGoogleGenerativeAI(model='gemini-1.5-pro', api_key=google_api_key)
 
 # Schema
 # class Review(TypedDict):
@@ -19,14 +23,13 @@ model = ChatOpenAI()
 # print(result['summary'])
 # print(result['sentiment'])
 
-class Review(TypedDict):
-    key_themes: Annotated[list[str], "Write down all the key themes discussed in the review in a list"]
-    summary: Annotated[str, "A brief summary of the review"]
-    # sentiment: Annotated[str, "Return sentiment of the review either negative, positive or neutral"]
-    sentiment: Annotated[Literal["positive", "negative", "neutral"], "Return sentiment of the review either negative, positive or neutral"]
-    pros: Annotated[Optional[list[str]], "List of pros mentioned in the review"]
-    cons: Annotated[Optional[list[str]], "List of cons mentioned in the review"]
-    name: Annotated[Optional[str], "Name of the reviewer"]
+class Review(BaseModel):
+    key_themes: list[str] = Field(description="Write down all the key themes discussed in the review in a list")
+    summary: str = Field(description="A brief summary of the review")
+    sentiment: Literal["positive", "negative", "neutral"] = Field(description="Return sentiment of the review either negative, positive or neutral")
+    pros: Optional[list[str]] = Field(default=None,description="List of pros mentioned in the review")
+    cons: Optional[list[str]] = Field(description="List of cons mentioned in the review")
+    name: str = Field(description="Write the name of the reviewer")
 
 structured_model = model.with_structured_output(Review)
 result = structured_model.invoke("""I recently upgraded to the Samsung Galaxy S24 Ultra, and I must say, it’s an absolute powerhouse! The Snapdragon 8 Gen 3 processor makes everything lightning fast—whether I’m gaming, multitasking, or editing photos. The 5000mAh battery easily lasts a full day even with heavy use, and the 45W fast charging is a lifesaver.
@@ -49,4 +52,4 @@ Expensive price tag
 Review by Sunil Patra
 """)
 
-print(result)
+print(result.cons)
